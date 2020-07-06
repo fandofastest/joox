@@ -1,0 +1,16 @@
+{
+    "name": "rendrianarma/jooxapi-x",
+    "description": "PHP JOOX API Wrapper",
+    "license": "MIT",
+    "authors": [{
+        "name": "Rendrian Arma",
+        "email": "rendrian@gustiarma.com"
+    }],
+    "autoload": {
+        "psr-4": {
+            "JooxAPIx\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {}
+}
