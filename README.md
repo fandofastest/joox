@@ -3,7 +3,16 @@ PHP Wrapper for grabbing data from JOOX Server, inspired by : [osyduck/jooxdownl
 
 
 ## Installation 
+use `composer`
+```
+composer require rendrianarma/jooxapi-x
 
+```
+then use it
+```
+use JooxAPIx\JooxAPIx;
+
+```
 
 ## Usage
 Require autoload.php
