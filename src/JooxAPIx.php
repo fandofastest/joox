@@ -1,5 +1,8 @@
 <?php
+
 namespace JooxAPIx;
+
+error_reporting(0);
 // set_time_limit(0);
 // ignore_user_abort(1);
 
@@ -30,26 +33,26 @@ class JooxAPIx
     $json = str_replace(')', '', $json);
     $json = json_decode($json);
     // if ($json->direct === 2) {
-      $result['thumbNail'] = $json->bigpic;
-      $result['songs'] = [];
+    $result['thumbNail'] = $json->bigpic;
+    $result['songs'] = [];
 
-      foreach ($json->itemlist as $itemList) {
+    foreach ($json->itemlist as $itemList) {
 
-        array_push($result['songs'], [
+      array_push($result['songs'], [
 
-          'id' => base64_encode($itemList->songid),
-          'singerId' =>  $itemList->singerid,
-          'singerName' =>  base64_decode($itemList->info2),
-          'title' => base64_decode($itemList->info1),
-          'albumId' => $itemList->albumid,
-          'albumName' => base64_decode($itemList->info3),
-          'duration' => gmdate('i:s', $itemList->playtime)
+        'id' => base64_encode($itemList->songid),
+        'singerId' =>  $itemList->singerid,
+        'singerName' =>  base64_decode($itemList->info2),
+        'title' => base64_decode($itemList->info1),
+        'albumId' => $itemList->albumid,
+        'albumName' => base64_decode($itemList->info3),
+        'duration' => gmdate('i:s', $itemList->playtime)
 
 
-        ]);
-      }
+      ]);
+    }
 
-      return $result;
+    return $result;
     // }
   }
 
@@ -68,23 +71,27 @@ class JooxAPIx
     $json = str_replace('MusicInfoCallback(', '', $json);
     $json = str_replace(')', '', $json);
     $json = json_decode($json);
+    // return $json->msg;
+    if (!isset($json->msg)) {
+      array_push($result, [
+        'songName' => $json->msong,
+        'singerName' => $json->msinger,
+        'thumbNail' => $json->imgSrc,
+        'albumThumbNail' => $json->album_url,
+        'kbpsMap' => $json->kbps_map,
+        'downloadLinks' => [
+          'mp3' => $json->mp3Url,
+          'm4a' => $json->m4aUrl,
+          'r192' => $json->r192Url,
+          'r320' => $json->r320Url,
+        ],
+        'lyric' => $lyric
 
-    array_push($result, [
-      'songName' => $json->msong,
-      'singerName' => $json->msinger,
-      'thumbNail' => $json->imgSrc,
-      'albumThumbNail' => $json->album_url,
-      'kbpsMap' => $json->kbps_map,
-      'downloadLinks' => [
-        'mp3' => $json->mp3Url,
-        'm4a' => $json->m4aUrl,
-        'r192' => $json->r192Url,
-        'r320' => $json->r320Url,
-      ],
-      'lyric' => $lyric
-
-    ]);
-    return $result;
+      ]);
+      return $result;
+    } else {
+      return $json;
+    }
   }
 
   public static function getSongLyric($id)
@@ -98,6 +105,7 @@ class JooxAPIx
     $ly = str_replace('MusicJsonCallback(', '', $ly);
     $ly = str_replace(')', '', $ly);
     $ly = json_decode($ly);
+
 
     $ly = str_replace('[999:00.00]***Lirik didapat dari pihak ketiga***', '***Recoded By J***', base64_decode($ly->lyric));
     $ly = str_replace('[offset:0]', '', $ly);
