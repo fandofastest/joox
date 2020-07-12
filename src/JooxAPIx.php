@@ -72,7 +72,7 @@ class JooxAPIx
     $json = str_replace(')', '', $json);
     $json = json_decode($json);
     // return $json->msg;
-    if (!isset($json->msg)) {
+    if ($json->code === 0) {
       array_push($result, [
         'songName' => $json->msong,
         'singerName' => $json->msinger,
@@ -89,9 +89,8 @@ class JooxAPIx
 
       ]);
       return $result;
-    } else {
-      return $json;
     }
+    return $json;
   }
 
   public static function getSongLyric($id)
