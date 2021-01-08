@@ -38,6 +38,8 @@ class JooxAPIx
 
     foreach ($json->itemlist as $itemList) {
 
+      // var_dump($itemList);
+
       array_push($result['songs'], [
 
         'id' => base64_encode($itemList->songid),
@@ -46,7 +48,7 @@ class JooxAPIx
         'title' => base64_decode($itemList->info1),
         'albumId' => $itemList->albumid,
         'albumName' => base64_decode($itemList->info3),
-        'duration' => gmdate('i:s', $itemList->playtime)
+        'duration' => gmdate('i:s', $itemList->playtime),
 
 
       ]);
@@ -89,6 +91,29 @@ class JooxAPIx
 
       ]);
       return $result;
+    }
+    return $json;
+  }
+
+
+  public static function getImgUrlById($id)
+  {
+
+    $result = [];
+    $ch = curl_init('https://api.joox.com/web-fcgi-bin/web_get_songinfo?songid=' . base64_decode(trim($id)) . '&lang=id&country=id&from_type=null&channel_id=null&_=' . time());
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array("X-Forwarded-For: 36.73.34.109"));
+    curl_setopt($ch, CURLOPT_COOKIE, 'wmid=142420656; user_type=1; country=id; session_key=2a5d97d05dc8fe238150184eaf3519ad;');
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36');
+    $json = curl_exec($ch);
+
+    $json = str_replace('MusicInfoCallback(', '', $json);
+    $json = str_replace(')', '', $json);
+    $json = json_decode($json);
+    // return $json->msg;
+    if ($json->code === 0) {
+     
+      return $json->imgSrc;
     }
     return $json;
   }
